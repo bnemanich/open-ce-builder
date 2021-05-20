@@ -18,6 +18,7 @@
 """
 
 import os
+import time
 import traceback
 
 from open_ce import utils
@@ -160,6 +161,7 @@ def build_feedstock_from_command(command, # pylint: disable=too-many-arguments, 
             try:
                 conda_build.api.build(os.path.join(os.getcwd(), recipe['path']),
                                config=config, notest=True)
+                time.sleep(5)
                 conda_build.api.test(os.path.join(os.getcwd(), recipe['path']), config=config)
             except Exception as exc: # pylint: disable=broad-except
                 traceback.print_exc()
