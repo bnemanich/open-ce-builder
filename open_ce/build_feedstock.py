@@ -50,7 +50,7 @@ def new_get_build_index(subdir, bldpkgs_dir, output_folder=None, clear_cache=Fal
     print("Calculated timestamp: " + str(result[1]))
     return result
 
-conda_build.index.get_build_index = new_get_build_index 
+#conda_build.index.get_build_index = new_get_build_index 
 
 def get_conda_build_config():
     '''
@@ -159,7 +159,8 @@ def build_feedstock_from_command(command, # pylint: disable=too-many-arguments, 
             _set_local_src_dir(local_src_dir, recipe, recipe_config_file)
             try:
                 conda_build.api.build(os.path.join(os.getcwd(), recipe['path']),
-                               config=config)
+                               config=config, notest=True)
+                conda_build.api.test(os.path.join(os.getcwd(), recipe['path']), config=config)
             except Exception as exc: # pylint: disable=broad-except
                 traceback.print_exc()
                 raise OpenCEError(Error.BUILD_RECIPE,
