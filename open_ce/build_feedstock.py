@@ -36,6 +36,22 @@ ARGUMENTS = [Argument.CONDA_BUILD_CONFIG, Argument.OUTPUT_FOLDER,
              Argument.RECIPES, Argument.WORKING_DIRECTORY,
              Argument.LOCAL_SRC_DIR]
 
+import conda_build.index
+
+original_get_build_index = conda_build.index.get_build_index
+
+def new_get_build_index(subdir, bldpkgs_dir, output_folder=None, clear_cache=False,
+                    omit_defaults=False, channel_urls=None, debug=False, verbose=True,
+                    **kwargs):
+    print("NEW INDEX!!!")
+    result = original_get_build_index(subdir, bldpkgs_dir, output_folder=output_folder, clear_cache=True,
+                    omit_defaults=omit_defaults, channel_urls=channel_urls, debug=debug, verbose=verbose,
+                    **kwargs)
+    print("Calculated timestamp: " + str(result[1]))
+    return result
+
+conda_build.index.get_build_index = new_get_build_index 
+
 def get_conda_build_config():
     '''
     Checks for a conda_build_config file inside config dir of the feedstock.
@@ -129,6 +145,7 @@ def build_feedstock_from_command(command, # pylint: disable=too-many-arguments, 
             config.skip_existing = True
             config.prefix_length = 225
             config.output_folder = output_folder
+            config.verbose = True
             config.variant_config_files = [config for config in command.conda_build_configs if os.path.exists(config)]
 
             recipe_conda_build_config = get_conda_build_config()
